@@ -63,7 +63,7 @@ class Infer(object):
 
         modnet.load_state_dict(torch.load(pretrained_ckpt, map_location='cpu'))
         self.modnet = modnet.eval().to(self.device)
-        self.fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D,
+        self.fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D,
                                                flip_input=False, device='cuda' if torch.cuda.is_available() else 'cpu')
 
     def process_source_for_input_dict(self, source_img: Image, data_transform, crop_center=False):
