@@ -214,5 +214,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     args.deca_path = 'DECA'
+    args.device = 'cuda:0' # Set the device to GPU
 
     main(args)

@@ -365,16 +365,14 @@ class ParametricAvatar(DECA):
 
         mlp_input_uv_z = F.grid_sample(uv_deformations_codes, verts_uvs, align_corners=False)[..., 0].permute(0, 2, 1)
 
-        mlp_input_uv = F.grid_sample(self.uv_grid.repeat(batch_size, 1, 1, 1).permute(0, 3, 1, 2),
-                                     verts_uvs, align_corners=False)[..., 0]
+        mlp_input_uv = F.grid_sample(self.uv_grid.repeat(batch_size, 1, 1, 1).permute(0, 3, 1, 2), verts_uvs, align_corners=False)[..., 0]
+
         mlp_input_uv = harmonic_encoding.harmonic_encoding(mlp_input_uv.permute(0, 2, 1), 6, )
 
         mlp_input_uv_deformations = torch.cat([mlp_input_uv_z, mlp_input_uv], dim=-1)
 
         if self.mask_for_face is None:
-            self.mask_for_face = F.grid_sample((F.interpolate(self.uv_face_eye_mask.repeat(batch_size, 1, 1, 1)
-                                                              , uv_deformations_codes.shape[-2:])),
-                                               verts_uvs, align_corners=False)[..., 0].permute(0, 2, 1) > 0.5
+            self.mask_for_face = F.grid_sample((F.interpolate(self.uv_face_eye_mask.repeat(batch_size, 1, 1, 1), uv_deformations_codes.shape[-2:])), verts_uvs, align_corners=False)[..., 0].permute(0, 2, 1) > 0.5
 
         bs, v, ch = mlp_input_uv_deformations.shape
         deformation_project = vertex_deformer(mlp_input_uv_deformations.view(-1, ch))
